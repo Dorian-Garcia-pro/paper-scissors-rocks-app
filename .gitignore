@@ -43,5 +43,5 @@ next-env.d.ts
 /frontend/node_modules
 node_modules
 next
-.env
+/backend/.env
 /frontend/.next

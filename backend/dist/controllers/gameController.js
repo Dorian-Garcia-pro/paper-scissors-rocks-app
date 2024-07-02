@@ -86,6 +86,7 @@ exports.playGame = playGame;
 // Reset the player's stats
 const resetGame = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { username } = req.body;
+    // Find player by username
     let player = yield Player_1.default.findOne({ username });
     // Check if the player exists and set stats to 0
     if (!player) {
@@ -96,6 +97,7 @@ const resetGame = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         player.streak = 0;
         player.bestStreak = 0;
         player.gamePlayed = 0;
+        player.wins = 0;
         yield player.save();
     }
     res.json({ message: "Game reset" });

@@ -1,34 +1,30 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { IPlayer } from "../../../backend/models/Player";
 
 const Game = () => {
   const [username, setUsername] = useState("");
   const [result, setResult] = useState("");
-  const [playerInfos, setPlayerInfos] = useState<PlayerInfos>();
+  const [playerInfos, setPlayerInfos] = useState<IPlayer>();
 
-  interface PlayerInfos {
-    username?: string;
-    score?: number;
-    streak?: number;
-    bestStreak?: number;
-    gamePlayed?: number;
-    wins?: number;
-  }
-
-  const handlePlay = async (moveClick: string) => {
+  const handlePlay = async (move: string) => {
     try {
-      if (username === "") {
-        alert("Username is empty");
+      // Check if the username is at least 3 characters long
+      if (username.length < 3) {
+        alert("Username must be at least 3 characters long");
         return;
       }
+      // Send username and move to the backend
       const response = await axios.post("http://localhost:5000/api/game/play", {
         username,
-        move: moveClick,
+        move,
       });
+      // Update the result
       setResult(
         `You ${response.data.result}. Computer chose ${response.data.computerMove}.`
       );
-      setPlayerInfos(response.data);
+      // Update the player's stats
+      setPlayerInfos(response.data as IPlayer);
     } catch (error) {
       console.error(error);
     }
@@ -41,13 +37,12 @@ const Game = () => {
         { username }
       );
       setPlayerInfos({
-        ...playerInfos,
         score: 0,
         streak: 0,
         bestStreak: 0,
         gamePlayed: 0,
         wins: 0,
-      });
+      } as IPlayer);
       setResult("");
     } catch (error) {
       console.error(error);

@@ -80,6 +80,7 @@ export const playGame = async (req: Request, res: Response) => {
 // Reset the player's stats
 export const resetGame = async (req: Request, res: Response) => {
   const { username } = req.body;
+  // Find player by username
   let player = await Player.findOne({ username });
 
   // Check if the player exists and set stats to 0
@@ -90,6 +91,7 @@ export const resetGame = async (req: Request, res: Response) => {
     player.streak = 0;
     player.bestStreak = 0;
     player.gamePlayed = 0;
+    player.wins = 0;
     await player.save();
   }
 

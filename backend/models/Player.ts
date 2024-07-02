@@ -1,6 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
-
-interface IPlayer extends Document {
+export interface IPlayer extends Document {
   username: string;
   score: number;
   streak: number;
@@ -19,3 +18,4 @@ const PlayerSchema: Schema = new Schema({
 });
 
 export default mongoose.model<IPlayer>('Player', PlayerSchema);
+

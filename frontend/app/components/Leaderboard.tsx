@@ -1,25 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const Leaderboard = () => {
   const [players, setPlayers] = useState([]);
 
+  // Fetch the leaderboard from the backend
   const fetchLeaderboard = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/leaderboard');
+      const response = await axios.get("http://localhost:5000/api/leaderboard");
       setPlayers(response.data);
     } catch (error) {
       console.error(error);
     }
   };
 
+  // Fetch the leaderboard when the component mounts
   useEffect(() => {
     fetchLeaderboard();
   }, []);
 
   return (
     <div>
-      <div className="titleWrapper"><h2>Leaderboard</h2> <button onClick={() => fetchLeaderboard()}>refresh</button></div>
+      <div className="titleWrapper">
+        <h2>Leaderboard</h2>
+        <button onClick={() => fetchLeaderboard()}>refresh</button>
+      </div>
       <table>
         <thead>
           <tr>
@@ -30,7 +35,6 @@ const Leaderboard = () => {
             <th>Best Streak</th>
             <th>Games Played</th>
             <th>Win rate</th>
-     
           </tr>
         </thead>
         <tbody>
@@ -42,13 +46,16 @@ const Leaderboard = () => {
               <td>{player.streak}</td>
               <td>{player.bestStreak}</td>
               <td>{player.gamePlayed}</td>
-              <td>{player.wins && player.gamePlayed ? ((player.wins / player.gamePlayed) * 100).toFixed(2) : 0}%</td>
-
-                  </tr>
+              <td>
+                {player.wins && player.gamePlayed
+                  ? ((player.wins / player.gamePlayed) * 100).toFixed(2)
+                  : 0}
+                %
+              </td>
+            </tr>
           ))}
         </tbody>
       </table>
-
     </div>
   );
 };

@@ -25,6 +25,24 @@
 
 }
 
+@keyframes vibrate {
+    0% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    50% {
+        transform: translateX(5px);
+    }
+    75% {
+        transform: translateX(-5px);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
 .btnMoves {
     position: relative;
     display: flex;
@@ -53,6 +71,7 @@
             user-select: none;
             filter: invert(1);
         }
+     
         &.btnRock {
             &[data-move="rock"] { 
                 z-index: 1;
@@ -62,7 +81,12 @@
 
                 &[data-result="lose"] {
                     filter: brightness(0) saturate(100%) invert(22%) sepia(100%) saturate(5000%) hue-rotate(0deg) brightness(99%) contrast(126%);
+                }    
+                &[data-result="draw"] {
+                    animation: vibrate 0.5s;
                 }
+
+               
             }
         }   
         &.btnPaper {
@@ -75,6 +99,9 @@
                 &[data-result="lose"] {
                     filter: brightness(0) saturate(100%) invert(22%) sepia(100%) saturate(5000%) hue-rotate(0deg) brightness(99%) contrast(126%);
                 }
+                &[data-result="draw"] {
+                    animation: vibrate 0.5s;
+                }
             }
         }
         &.btnScissors {
@@ -86,6 +113,9 @@
 
                 &[data-result="lose"] {
                     filter: brightness(0) saturate(100%) invert(22%) sepia(100%) saturate(5000%) hue-rotate(0deg) brightness(99%) contrast(126%);
+                }
+                &[data-result="draw"] {
+                    animation: vibrate 0.5s;
                 }
             }
         }
@@ -156,7 +186,6 @@ animation: bumpInto 0.5s forwards;
         &[data-result="win"] {
             color: green;
         }
-
         &[data-result="lose"] {
             color: red;
         }

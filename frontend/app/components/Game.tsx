@@ -28,7 +28,7 @@ const Game = () => {
   const buttonPaperRef = useRef<HTMLButtonElement>(null);
   const buttonScissorsRef = useRef<HTMLButtonElement>(null);
 
-  const returnDelay = 500;
+  const returnDelay = 400;
   const parentOffset = 125;
 
 
@@ -169,7 +169,7 @@ const Game = () => {
               transition:
                 (computerMove !== playerMove && computerMove === "rock") ||
                 (computerMove !== playerMove && playerMove === "rock")
-                ? "transform 500ms"
+                ? `transform ${returnDelay}ms`	
                 : "none",
               }}
               onClick={() => {
@@ -193,7 +193,7 @@ const Game = () => {
                 transition:
                   (computerMove !== playerMove && computerMove === "paper") ||
                   (computerMove !== playerMove && playerMove === "paper")
-                    ? "transform 500ms"
+                  ? `transform ${returnDelay}ms`	
                     : "none",
               }}
               onClick={() => {
@@ -219,7 +219,7 @@ const Game = () => {
                   (computerMove !== playerMove &&
                     computerMove === "scissors") ||
                   (computerMove !== playerMove && playerMove === "scissors")
-                    ? "transform 500ms"
+                  ? `transform ${returnDelay}ms`	
                     : "none",
               }}
               onClick={() => {

@@ -12,34 +12,45 @@ interface ButtonPosition {
   y: number;
 }
 
+interface roundMoves {
+  playerMove: string;
+  computerMove: string;
+  result: string;
+}
+
 const Game = () => {
   const [username, setUsername] = useState<string>("");
   const [result, setResult] = useState<string>("");
   const [computerMove, setComputerMove] = useState<string>("");
   const [playerMove, setPlayerMove] = useState<string>("");
   const [playerInfos, setPlayerInfos] = useState<IPlayer | undefined>();
+  let last10Moves: roundMoves[] = [];
+
+  // Refs
   const inputRef = useRef<HTMLInputElement | null>(null);
-
-  const [rockButtonPosition, setRockButtonPosition] = useState<ButtonPosition>({ x: 0, y: 0 });
-  const [paperButtonPosition, setPaperButtonPosition] = useState<ButtonPosition>({ x: 0, y: 0 });
-  const [scissorsButtonPosition, setScissorsButtonPosition] = useState<ButtonPosition>({ x: 0, y: 0 });
-
   const buttonRockRef = useRef<HTMLButtonElement>(null);
   const buttonPaperRef = useRef<HTMLButtonElement>(null);
   const buttonScissorsRef = useRef<HTMLButtonElement>(null);
 
+  // Button position states
+  const [rockButtonPosition, setRockButtonPosition] = useState<ButtonPosition>({ x: 0, y: 0 });
+  const [paperButtonPosition, setPaperButtonPosition] = useState<ButtonPosition>({ x: 0, y: 0 });
+  const [scissorsButtonPosition, setScissorsButtonPosition] = useState<ButtonPosition>({ x: 0, y: 0 });
+
+// Clash animation parameters
   const returnDelay = 400;
   const parentOffset = 125;
-
-
-
+  
   const calculateOffset = (buttonRef: React.RefObject<HTMLButtonElement>, parentOffset: number) => {
+    // Save the parent and button's bounding rectangles (coordinates and dimensions)
     const parentRect = buttonRef.current?.parentElement?.getBoundingClientRect();
     const buttonRect = buttonRef.current?.getBoundingClientRect();
 
+    // If both rectangles are available, calculate where the center of the button is relative to the center of the parent
     if (parentRect && buttonRect) {
       const offsetX = parentRect.left + parentRect.width / 2 - (buttonRect.left + buttonRect.width / 2);
       const offsetY = parentRect.top + parentRect.height / 2 - (buttonRect.top + buttonRect.height / 2);
+      // Return the coordinates of the offset
       return {
         x: Math.floor(offsetX),
         y: Math.floor(offsetY - parentOffset),
@@ -66,6 +77,12 @@ const Game = () => {
       setResult(response.data.result);
       setComputerMove(response.data.computerMove);
       setPlayerMove(move);
+      // Update list of last 10 moves
+      last10Moves.push({
+        playerMove: response.data.playerMove,
+        computerMove: response.data.computerMove,
+        result: response.data.result,
+      } as roundMoves);
       // Update the player's stats
       setPlayerInfos(response.data as IPlayer);
 
@@ -88,7 +105,7 @@ const Game = () => {
         gamePlayed: 0,
         wins: 0,
       } as IPlayer);
-      setResult("restart");
+      setResult("");
       setUsername("");
       if (inputRef.current) {
         (inputRef.current as any).value = ""; // Empty the input
@@ -100,6 +117,7 @@ const Game = () => {
 
   const handleStart = (uname: string) => {
     if (inputRef.current) {
+      setComputerMove("");
       setUsername((inputRef.current as HTMLInputElement).value);
       setPlayerInfos({
         username: (inputRef.current as HTMLInputElement).value,
@@ -119,9 +137,11 @@ const Game = () => {
   };
 
   const handleButtonClick = (move: string) => {
+    // Calculate the offset for each button
     setRockButtonPosition(calculateOffset(buttonRockRef, parentOffset));
     setPaperButtonPosition(calculateOffset(buttonPaperRef, parentOffset));
     setScissorsButtonPosition(calculateOffset(buttonScissorsRef, parentOffset));
+    // Reset the button positions after a delay
     setTimeout(() => {
         setRockButtonPosition({ x: 0, y: 0 });
         setPaperButtonPosition({ x: 0, y: 0 });
@@ -131,6 +151,7 @@ const Game = () => {
 
   return (
     <div className="gameMain">
+      {username && <h1>Welcome {username}!</h1>}
       {!username && (
         <form
         className="formUsername"
@@ -144,8 +165,8 @@ const Game = () => {
             ref={inputRef}
             placeholder="Enter your username"
             required
-            minLength={3} // Add minLength attribute to enforce 3 character minimum
-            maxLength={15} // Add maxLength attribute to enforce 15 character maximum
+            minLength={3} 
+            maxLength={15}
             className="inputUsername"
             />
             <button type="submit" className="buttons">Valider</button>
@@ -157,8 +178,9 @@ const Game = () => {
             <div className="btnMoves">
             <button
               className="btnRock"
-              data-move={computerMove}
+              data-computerMove={computerMove}
               data-result={result}
+              data-playermove={playerMove}
               ref={buttonRockRef}
               style={{
               transform:
@@ -181,8 +203,10 @@ const Game = () => {
             </button>
             <button
               className="btnPaper"
-              data-move={computerMove}
+              data-computerMove={computerMove}
               data-result={result}
+              data-playermove={playerMove}
+
               ref={buttonPaperRef}
               style={{
                 transform:
@@ -205,8 +229,9 @@ const Game = () => {
             </button>
             <button
               className="btnScissors"
-              data-move={computerMove}
+              data-computerMove={computerMove}
               data-result={result}
+              data-playermove={playerMove}
               ref={buttonScissorsRef}
               style={{
                 transform:
@@ -230,7 +255,7 @@ const Game = () => {
               <Image src={scissors} alt="scissors button" />
             </button>
           </div>
-          {result !== "restart" && (
+          {result !== "" && (
             <div className="resultDisplay">
               <p data-result={result}>You {result}</p>
               <p>Computer chose {computerMove}</p>

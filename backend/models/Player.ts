@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
+
 export interface IPlayer extends Document {
   username: string;
   score: number;

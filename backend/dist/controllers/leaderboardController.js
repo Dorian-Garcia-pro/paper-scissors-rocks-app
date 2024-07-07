@@ -15,7 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getLeaderboard = void 0;
 const Player_1 = __importDefault(require("../models/Player"));
 const getLeaderboard = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const topPlayers = yield Player_1.default.find().sort({ score: -1 }).limit(10);
+    const topPlayers = yield Player_1.default.find({ gamePlayed: { $gt: 0 } })
+        .sort({ score: -1 })
+        .limit(10);
     res.json(topPlayers);
 });
 exports.getLeaderboard = getLeaderboard;

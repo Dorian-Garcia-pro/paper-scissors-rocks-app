@@ -99,12 +99,6 @@ const Game = () => {
   };
 
   const handleStart = (uname: string) => {
-    // Check if the username is at least 3 characters long
-    if (uname.length < 3 || uname.length > 16) {
-      console.log(uname.length)
-      alert("Username must be between 3 and 16 characters long");
-      return;
-    }
     if (inputRef.current) {
       setUsername((inputRef.current as HTMLInputElement).value);
       setPlayerInfos({
@@ -138,33 +132,45 @@ const Game = () => {
   return (
     <div className="gameMain">
       {!username && (
-        <>
-          <input
+        <form
+        className="formUsername"
+          onSubmit={(e) => {
+            e.preventDefault(); // Prevent default form submission
+            handleStart(inputRef.current?.value as string);
+            }}
+          >
+            <input
             type="text"
             ref={inputRef}
             placeholder="Enter your username"
             required
+            minLength={3} // Add minLength attribute to enforce 3 character minimum
+            maxLength={15} // Add maxLength attribute to enforce 15 character maximum
             className="inputUsername"
-          />
-          <button
-            onClick={(e) => handleStart(inputRef.current?.value as string)}
-          >
-            Valider
-          </button>
-        </>
-      )}
+            />
+            <button type="submit" className="buttons">Valider</button>
+          </form>
+          )}
 
-      {username && (
-        <>
-          <div className="btnMoves">
+          {username && (
+          <>
+            <div className="btnMoves">
             <button
               className="btnRock"
               data-move={computerMove}
               data-result={result}
               ref={buttonRockRef}
               style={{
-                transform: computerMove !== playerMove && computerMove === "rock" ||  computerMove !== playerMove && playerMove === "rock" ? `translate(${rockButtonPosition.x}px, ${rockButtonPosition.y}px)` : "none",
-                transition:computerMove !== playerMove && computerMove === "rock" ||  computerMove !== playerMove && playerMove === "rock" ? "transform 500ms" : "none",
+              transform:
+                (computerMove !== playerMove && computerMove === "rock") ||
+                (computerMove !== playerMove && playerMove === "rock")
+                ? `translate(${rockButtonPosition.x}px, ${rockButtonPosition.y}px)`
+                : "none",
+              transition:
+                (computerMove !== playerMove && computerMove === "rock") ||
+                (computerMove !== playerMove && playerMove === "rock")
+                ? "transform 500ms"
+                : "none",
               }}
               onClick={() => {
                 handlePlay("rock");
@@ -179,8 +185,16 @@ const Game = () => {
               data-result={result}
               ref={buttonPaperRef}
               style={{
-                transform: computerMove !== playerMove && computerMove === "paper" ||  computerMove !== playerMove && playerMove === "paper" ? `translate(${paperButtonPosition.x}px, ${paperButtonPosition.y}px)` : "none",
-                transition:computerMove !== playerMove && computerMove === "paper" ||  computerMove !== playerMove && playerMove === "paper" ? "transform 500ms" : "none",
+                transform:
+                  (computerMove !== playerMove && computerMove === "paper") ||
+                  (computerMove !== playerMove && playerMove === "paper")
+                    ? `translate(${paperButtonPosition.x}px, ${paperButtonPosition.y}px)`
+                    : "none",
+                transition:
+                  (computerMove !== playerMove && computerMove === "paper") ||
+                  (computerMove !== playerMove && playerMove === "paper")
+                    ? "transform 500ms"
+                    : "none",
               }}
               onClick={() => {
                 handlePlay("paper");
@@ -195,8 +209,18 @@ const Game = () => {
               data-result={result}
               ref={buttonScissorsRef}
               style={{
-                transform: computerMove !== playerMove && computerMove === "scissors" ||  computerMove !== playerMove && playerMove === "scissors" ? `translate(${scissorsButtonPosition.x}px, ${scissorsButtonPosition.y}px)` : "none",
-                transition:computerMove !== playerMove && computerMove === "scissors" ||  computerMove !== playerMove && playerMove === "scissors" ? "transform 500ms" : "none",
+                transform:
+                  (computerMove !== playerMove &&
+                    computerMove === "scissors") ||
+                  (computerMove !== playerMove && playerMove === "scissors")
+                    ? `translate(${scissorsButtonPosition.x}px, ${scissorsButtonPosition.y}px)`
+                    : "none",
+                transition:
+                  (computerMove !== playerMove &&
+                    computerMove === "scissors") ||
+                  (computerMove !== playerMove && playerMove === "scissors")
+                    ? "transform 500ms"
+                    : "none",
               }}
               onClick={() => {
                 handlePlay("scissors");
@@ -235,7 +259,7 @@ const Game = () => {
               </p>
             </div>
           </div>
-          <button className="resetButton" onClick={() => confirmReset()}>
+          <button className="buttons" onClick={() => confirmReset()}>
             Reset
           </button>
         </>

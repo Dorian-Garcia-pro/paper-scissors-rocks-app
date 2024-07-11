@@ -1,6 +1,18 @@
 import React from 'react';
 
-const RecentMoves = () => {
+
+interface roundMoves {
+    playerMove: string;
+    computerMove: string;
+    result: string;
+  }
+
+interface RecentMovesProps {
+    updatedLast10moves: roundMoves[];
+  }
+
+const RecentMoves: React.FC<RecentMovesProps> = ({ updatedLast10moves }) => {
+
     return (
         <div>
             <h1>Recent Moves</h1>
@@ -13,31 +25,15 @@ const RecentMoves = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Rock</td>
-                        <td>Scissors</td>
-                        <td>Player wins</td>
-                    </tr>
-                    <tr>
-                        <td>Rock</td>
-                        <td>Scissors</td>
-                        <td>Player wins</td>
-                    </tr>
-                    <tr>
-                        <td>Rock</td>
-                        <td>Scissors</td>
-                        <td>Player wins</td>
-                    </tr>
-                    <tr>
-                        <td>Rock</td>
-                        <td>Scissors</td>
-                        <td>Player wins</td>
-                    </tr>
-                    <tr>
-                        <td>Rock</td>
-                        <td>Scissors</td>
-                        <td>Player wins</td>
-                    </tr>
+      
+                    {updatedLast10moves.map((round, index) => (
+                        <tr key={index}>
+                            <td>{round.playerMove}</td>
+                            <td>{round.computerMove}</td>
+                            <td>{round.result}</td>
+                        </tr>
+                    ))}
+                    
                 </tbody>
             </table>
         </div>

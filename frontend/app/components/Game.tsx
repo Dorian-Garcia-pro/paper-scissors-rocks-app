@@ -18,13 +18,17 @@ interface roundMoves {
   result: string;
 }
 
-const Game = () => {
+interface GameProps {
+  updateLast10moves: (round: roundMoves) => void;
+}
+
+
+const Game: React.FC<GameProps> = ({ updateLast10moves }) => {
   const [username, setUsername] = useState<string>("");
   const [result, setResult] = useState<string>("");
   const [computerMove, setComputerMove] = useState<string>("");
   const [playerMove, setPlayerMove] = useState<string>("");
   const [playerInfos, setPlayerInfos] = useState<IPlayer | undefined>();
-  let last10Moves: roundMoves[] = [];
 
   // Refs
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -77,12 +81,14 @@ const Game = () => {
       setResult(response.data.result);
       setComputerMove(response.data.computerMove);
       setPlayerMove(move);
-      // Update list of last 10 moves
-      last10Moves.push({
-        playerMove: response.data.playerMove,
+      // Update list of last 10 moves    
+      updateLast10moves({
+        playerMove: move,
         computerMove: response.data.computerMove,
         result: response.data.result,
-      } as roundMoves);
+      })  
+
+
       // Update the player's stats
       setPlayerInfos(response.data as IPlayer);
 
@@ -151,7 +157,6 @@ const Game = () => {
 
   return (
     <div className="gameMain">
-      {username && <h1>Welcome {username}!</h1>}
       {!username && (
         <form
         className="formUsername"

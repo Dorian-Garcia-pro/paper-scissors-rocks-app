@@ -20,10 +20,12 @@ interface roundMoves {
 
 interface GameProps {
   updateLast10moves: (round: roundMoves) => void;
+  updatePLayerStats: (infos: any, username? : any) => void;
+  updateLeaderboard: () => void;
 }
 
 
-const Game: React.FC<GameProps> = ({ updateLast10moves }) => {
+const Game: React.FC<GameProps> = ({ updateLast10moves, updatePLayerStats, updateLeaderboard }) => {
   const [username, setUsername] = useState<string>("");
   const [result, setResult] = useState<string>("");
   const [computerMove, setComputerMove] = useState<string>("");
@@ -75,9 +77,6 @@ const Game: React.FC<GameProps> = ({ updateLast10moves }) => {
         move,
       });
       // Update the result
-      setResult(
-        `You ${response.data.result}. Computer chose ${response.data.computerMove}.`
-      );
       setResult(response.data.result);
       setComputerMove(response.data.computerMove);
       setPlayerMove(move);
@@ -88,9 +87,13 @@ const Game: React.FC<GameProps> = ({ updateLast10moves }) => {
         result: response.data.result,
       })  
 
-
       // Update the player's stats
       setPlayerInfos(response.data as IPlayer);
+      updatePLayerStats(response.data, username);
+      // Update the leaderboard
+      updateLeaderboard()
+
+      
 
     } catch (error) {
       console.error(error);
@@ -125,14 +128,19 @@ const Game: React.FC<GameProps> = ({ updateLast10moves }) => {
     if (inputRef.current) {
       setComputerMove("");
       setUsername((inputRef.current as HTMLInputElement).value);
-      setPlayerInfos({
+      const userdatas = {
         username: (inputRef.current as HTMLInputElement).value,
         score: 0,
         streak: 0,
         bestStreak: 0,
         gamePlayed: 0,
         wins: 0,
-      }as IPlayer);
+      }
+
+      setPlayerInfos(userdatas as IPlayer);
+      updatePLayerStats(userdatas);
+      updateLeaderboard();
+      
     }
   };
 

@@ -1,43 +1,42 @@
-import React from 'react';
-
+import React from "react";
+import "../styles/leaderboard.scss";
 
 interface roundMoves {
-    playerMove: string;
-    computerMove: string;
-    result: string;
-  }
+  playerMove: string;
+  computerMove: string;
+  result: string;
+}
 
 interface RecentMovesProps {
-    updatedLast10moves: roundMoves[];
-  }
+  updatedLast10moves: roundMoves[];
+}
 
 const RecentMoves: React.FC<RecentMovesProps> = ({ updatedLast10moves }) => {
-
-    return (
-        <div>
-            <h1>Recent Moves</h1>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Player</th>
-                        <th>Computer</th>
-                        <th>Result</th>
-                    </tr>
-                </thead>
-                <tbody>
-      
-                    {updatedLast10moves.map((round, index) => (
-                        <tr key={index}>
-                            <td>{round.playerMove}</td>
-                            <td>{round.computerMove}</td>
-                            <td>{round.result}</td>
-                        </tr>
-                    ))}
-                    
-                </tbody>
-            </table>
-        </div>
-    );
+  return (
+    <div className="mainLeaderboard">
+      <div className="titleWrapper">
+        <h2>Recent Moves</h2>
+      </div>
+      <table className="leaderboardTable recentMovesTable">
+        <thead>
+          <tr>
+            <th>Player</th>
+            <th>Computer</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          {updatedLast10moves.map((round, index) => (
+            <tr key={index}>
+              <td>{round.playerMove}</td>
+              <td>{round.computerMove}</td>
+              <td data-result={round.result}>{round.result}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 };
 
 export default RecentMoves;

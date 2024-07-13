@@ -31,15 +31,31 @@
 }
 
 .leaderboardTable {
+  &.recentMovesTable {
+    & > thead {
+      & > tr {   
+        & > th {
+          padding: 1rem;
+          text-align: center;
+          @media screen and (max-width: 570px){
+            padding:1rem;
+          }          
+        }
+      }
+    }
+  }
+  
   & > thead {
     & > tr {
         background-color: rgb(18, 18, 18);
       & > th {
         padding: 1rem;
         text-align: center;
-        @media screen and (max-width: 460px){
-          padding: 2px;
+        @media screen and (max-width: 570px){
+          padding: 4px;
         }
+
+        
       }
     }
   }
@@ -59,6 +75,15 @@
         padding: 0.5rem;
         text-align: center;
       }
+    }
+    & tr > td {
+      &[data-result="lose"] {
+       color: red;
+      }
+      &[data-result="win"] {
+        color: green;
+       }
+      text-transform: capitalize;
     }
   }
 }

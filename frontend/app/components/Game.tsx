@@ -267,14 +267,13 @@ const Game: React.FC<GameProps> = ({ updateLast10moves, updatePLayerStats, updat
             >
               <Image src={scissors} alt="scissors button" />
             </button>
-          </div>
-          {result !== "" && (
+          </div>            {result !== "" && (
             <div className="resultDisplay">
               <p data-result={result}>You {result}</p>
-              <p>Computer chose {computerMove}</p>
+           {/*    <p>Computer chose {computerMove}</p> */}
             </div>
           )}
-          <div className="stats">
+{/*           <div className="stats">
             <div>
               <p>Score : {playerInfos?.score}</p>
               <span>|</span>
@@ -296,7 +295,7 @@ const Game: React.FC<GameProps> = ({ updateLast10moves, updatePLayerStats, updat
                 %)
               </p>
             </div>
-          </div>
+          </div> */}
           <button className="buttons" onClick={() => confirmReset()}>
             Reset
           </button>

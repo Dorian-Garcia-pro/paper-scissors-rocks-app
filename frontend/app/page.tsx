@@ -12,8 +12,6 @@ export default function Home() {
     computerMove: string;
     result: string;
   }
-
-
   const [last10moves, setLast10moves] = useState<roundMoves[]>([]);
   const [playerStats, setPlayerStats] = useState();
   const [leaderboard, setLeaderboard] = useState([]);
@@ -32,10 +30,6 @@ export default function Home() {
     console.error(error);
   }
 };
-  
-
-
-
 
   const updateLast10moves = (round: roundMoves) => {
     setLast10moves(prevMoves => {
@@ -73,13 +67,6 @@ const updateLeaderboard = async () => {
     console.error('Error updating leaderboard:', error);
   }
 };
-
-
- 
-
-
-
-
 
   return (
     <main className={styles.main}>

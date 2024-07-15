@@ -1,31 +1,28 @@
 import React, { useState, useRef } from "react";
+import "../styles/games.scss";
 import Image from "next/image";
 import axios from "axios";
 import { IPlayer } from "../../../backend/models/Player";
-import "../styles/games.scss";
+// Import images
 import rock from "../assets/icons8-fist-96.png";
 import paper from "../assets/icons8-hand-96.png";
 import scissors from "../assets/icons8-hand-scissors-96.png";
-
-interface ButtonPosition {
-  x: number;
-  y: number;
-}
-
-interface roundMoves {
-  playerMove: string;
-  computerMove: string;
-  result: string;
-}
+// Import types
+import { roundMoves, ButtonPosition, PlayerStats } from "../types";
 
 interface GameProps {
-  updateLast10moves: (round: roundMoves) => void;
-  updatePLayerStats: (infos: any, username? : any) => void;
+  updateLast10moves: (round: roundMoves) => roundMoves[];
+  updatePLayerStats: (infos: PlayerStats, username?: any) => void;
   updateLeaderboard: () => void;
+  setLast10moves: (round: roundMoves[]) => roundMoves[];
 }
 
-
-const Game: React.FC<GameProps> = ({ updateLast10moves, updatePLayerStats, updateLeaderboard }) => {
+const Game: React.FC<GameProps> = ({
+  updateLast10moves,
+  updatePLayerStats,
+  updateLeaderboard,
+  setLast10moves,
+}) => {
   const [username, setUsername] = useState<string>("");
   const [result, setResult] = useState<string>("");
   const [computerMove, setComputerMove] = useState<string>("");
@@ -39,23 +36,38 @@ const Game: React.FC<GameProps> = ({ updateLast10moves, updatePLayerStats, updat
   const buttonScissorsRef = useRef<HTMLButtonElement>(null);
 
   // Button position states
-  const [rockButtonPosition, setRockButtonPosition] = useState<ButtonPosition>({ x: 0, y: 0 });
-  const [paperButtonPosition, setPaperButtonPosition] = useState<ButtonPosition>({ x: 0, y: 0 });
-  const [scissorsButtonPosition, setScissorsButtonPosition] = useState<ButtonPosition>({ x: 0, y: 0 });
+  const [rockButtonPosition, setRockButtonPosition] = useState<ButtonPosition>({
+    x: 0,
+    y: 0,
+  });
+  const [paperButtonPosition, setPaperButtonPosition] =
+    useState<ButtonPosition>({ x: 0, y: 0 });
+  const [scissorsButtonPosition, setScissorsButtonPosition] =
+    useState<ButtonPosition>({ x: 0, y: 0 });
 
-// Clash animation parameters
+  // Clash animation parameters
   const returnDelay = 400;
   const parentOffset = 125;
-  
-  const calculateOffset = (buttonRef: React.RefObject<HTMLButtonElement>, parentOffset: number) => {
+
+  const calculateOffset = (
+    buttonRef: React.RefObject<HTMLButtonElement>,
+    parentOffset: number
+  ) => {
     // Save the parent and button's bounding rectangles (coordinates and dimensions)
-    const parentRect = buttonRef.current?.parentElement?.getBoundingClientRect();
+    const parentRect =
+      buttonRef.current?.parentElement?.getBoundingClientRect();
     const buttonRect = buttonRef.current?.getBoundingClientRect();
 
     // If both rectangles are available, calculate where the center of the button is relative to the center of the parent
     if (parentRect && buttonRect) {
-      const offsetX = parentRect.left + parentRect.width / 2 - (buttonRect.left + buttonRect.width / 2);
-      const offsetY = parentRect.top + parentRect.height / 2 - (buttonRect.top + buttonRect.height / 2);
+      const offsetX =
+        parentRect.left +
+        parentRect.width / 2 -
+        (buttonRect.left + buttonRect.width / 2);
+      const offsetY =
+        parentRect.top +
+        parentRect.height / 2 -
+        (buttonRect.top + buttonRect.height / 2);
       // Return the coordinates of the offset
       return {
         x: Math.floor(offsetX),
@@ -66,11 +78,8 @@ const Game: React.FC<GameProps> = ({ updateLast10moves, updatePLayerStats, updat
     return { x: 0, y: 0 };
   };
 
-
-
   const handlePlay = async (move: string) => {
     try {
-  
       // Send username and move to the backend
       const response = await axios.post("http://localhost:5000/api/game/play", {
         username,
@@ -80,21 +89,18 @@ const Game: React.FC<GameProps> = ({ updateLast10moves, updatePLayerStats, updat
       setResult(response.data.result);
       setComputerMove(response.data.computerMove);
       setPlayerMove(move);
-      // Update list of last 10 moves    
+      // Update list of last 10 moves
       updateLast10moves({
         playerMove: move,
         computerMove: response.data.computerMove,
         result: response.data.result,
-      })  
+      });
 
       // Update the player's stats
       setPlayerInfos(response.data as IPlayer);
       updatePLayerStats(response.data, username);
       // Update the leaderboard
-      updateLeaderboard()
-
-      
-
+      updateLeaderboard();
     } catch (error) {
       console.error(error);
     }
@@ -107,7 +113,7 @@ const Game: React.FC<GameProps> = ({ updateLast10moves, updatePLayerStats, updat
         { username }
       );
       setPlayerInfos({
-        username: "", 
+        username: "",
         score: 0,
         streak: 0,
         bestStreak: 0,
@@ -116,8 +122,15 @@ const Game: React.FC<GameProps> = ({ updateLast10moves, updatePLayerStats, updat
       } as IPlayer);
       setResult("");
       setUsername("");
+      setLast10moves(
+        Array<roundMoves>(10).fill({
+          playerMove: "-",
+          computerMove: "-",
+          result: "-",
+        })
+      );
       if (inputRef.current) {
-        (inputRef.current as any).value = ""; // Empty the input
+        (inputRef.current as any).value = "";
       }
     } catch (error) {
       console.error(error);
@@ -135,17 +148,20 @@ const Game: React.FC<GameProps> = ({ updateLast10moves, updatePLayerStats, updat
         bestStreak: 0,
         gamePlayed: 0,
         wins: 0,
-      }
+      };
 
       setPlayerInfos(userdatas as IPlayer);
       updatePLayerStats(userdatas);
       updateLeaderboard();
-      
     }
   };
 
   const confirmReset = () => {
-    if (window.confirm("Are you sure you want to reset the game? Your progress will be lost.")) {
+    if (
+      window.confirm(
+        "Are you sure you want to reset the game? Your progress will be lost."
+      )
+    ) {
       handleReset();
     }
   };
@@ -157,9 +173,9 @@ const Game: React.FC<GameProps> = ({ updateLast10moves, updatePLayerStats, updat
     setScissorsButtonPosition(calculateOffset(buttonScissorsRef, parentOffset));
     // Reset the button positions after a delay
     setTimeout(() => {
-        setRockButtonPosition({ x: 0, y: 0 });
-        setPaperButtonPosition({ x: 0, y: 0 });
-        setScissorsButtonPosition({ x: 0, y: 0 });  
+      setRockButtonPosition({ x: 0, y: 0 });
+      setPaperButtonPosition({ x: 0, y: 0 });
+      setScissorsButtonPosition({ x: 0, y: 0 });
     }, returnDelay);
   };
 
@@ -167,28 +183,32 @@ const Game: React.FC<GameProps> = ({ updateLast10moves, updatePLayerStats, updat
     <div className="gameMain">
       {!username && (
         <form
-        className="formUsername"
+          className="formUsername"
           onSubmit={(e) => {
             e.preventDefault(); // Prevent default form submission
             handleStart(inputRef.current?.value as string);
-            }}
-          >
-            <input
+          }}
+        >
+          <input
             type="text"
             ref={inputRef}
             placeholder="Enter your username"
             required
-            minLength={3} 
+            minLength={3}
             maxLength={15}
             className="inputUsername"
-            />
-            <button type="submit" className="buttons">Valider</button>
-          </form>
-          )}
+            pattern="^[a-zA-Z0-9]+$"
+            title="Special characters are not allowed"
+          />
+          <button type="submit" className="buttons">
+            Valider
+          </button>
+        </form>
+      )}
 
-          {username && (
-          <>
-            <div className="btnMoves">
+      {username && (
+        <>
+          <div className="btnMoves">
             <button
               className="btnRock"
               data-computerMove={computerMove}
@@ -196,16 +216,16 @@ const Game: React.FC<GameProps> = ({ updateLast10moves, updatePLayerStats, updat
               data-playermove={playerMove}
               ref={buttonRockRef}
               style={{
-              transform:
-                (computerMove !== playerMove && computerMove === "rock") ||
-                (computerMove !== playerMove && playerMove === "rock")
-                ? `translate(${rockButtonPosition.x}px, ${rockButtonPosition.y}px)`
-                : "none",
-              transition:
-                (computerMove !== playerMove && computerMove === "rock") ||
-                (computerMove !== playerMove && playerMove === "rock")
-                ? `transform ${returnDelay}ms`	
-                : "none",
+                transform:
+                  (computerMove !== playerMove && computerMove === "rock") ||
+                  (computerMove !== playerMove && playerMove === "rock")
+                    ? `translate(${rockButtonPosition.x}px, ${rockButtonPosition.y}px)`
+                    : "none",
+                transition:
+                  (computerMove !== playerMove && computerMove === "rock") ||
+                  (computerMove !== playerMove && playerMove === "rock")
+                    ? `transform ${returnDelay}ms`
+                    : "none",
               }}
               onClick={() => {
                 handlePlay("rock");
@@ -219,7 +239,6 @@ const Game: React.FC<GameProps> = ({ updateLast10moves, updatePLayerStats, updat
               data-computerMove={computerMove}
               data-result={result}
               data-playermove={playerMove}
-
               ref={buttonPaperRef}
               style={{
                 transform:
@@ -230,7 +249,7 @@ const Game: React.FC<GameProps> = ({ updateLast10moves, updatePLayerStats, updat
                 transition:
                   (computerMove !== playerMove && computerMove === "paper") ||
                   (computerMove !== playerMove && playerMove === "paper")
-                  ? `transform ${returnDelay}ms`	
+                    ? `transform ${returnDelay}ms`
                     : "none",
               }}
               onClick={() => {
@@ -257,7 +276,7 @@ const Game: React.FC<GameProps> = ({ updateLast10moves, updatePLayerStats, updat
                   (computerMove !== playerMove &&
                     computerMove === "scissors") ||
                   (computerMove !== playerMove && playerMove === "scissors")
-                  ? `transform ${returnDelay}ms`	
+                    ? `transform ${returnDelay}ms`
                     : "none",
               }}
               onClick={() => {
@@ -267,35 +286,13 @@ const Game: React.FC<GameProps> = ({ updateLast10moves, updatePLayerStats, updat
             >
               <Image src={scissors} alt="scissors button" />
             </button>
-          </div>            {result !== "" && (
+          </div>{" "}
+          {result !== "" && (
             <div className="resultDisplay">
               <p data-result={result}>You {result}</p>
-           {/*    <p>Computer chose {computerMove}</p> */}
+              {/*    <p>Computer chose {computerMove}</p> */}
             </div>
           )}
-{/*           <div className="stats">
-            <div>
-              <p>Score : {playerInfos?.score}</p>
-              <span>|</span>
-              <p>
-                Streak : {playerInfos?.streak} (Best : {playerInfos?.bestStreak}
-                )
-              </p>
-            </div>
-
-            <div>
-              <p>
-                Wins : {playerInfos?.wins}/{playerInfos?.gamePlayed} (
-                {playerInfos?.wins && playerInfos?.gamePlayed
-                  ? (
-                      (playerInfos?.wins / playerInfos?.gamePlayed) *
-                      100
-                    ).toFixed(2)
-                  : 0}
-                %)
-              </p>
-            </div>
-          </div> */}
           <button className="buttons" onClick={() => confirmReset()}>
             Reset
           </button>

@@ -1,11 +1,6 @@
 import React from "react";
 import "../styles/leaderboard.scss";
-
-interface roundMoves {
-  playerMove: string;
-  computerMove: string;
-  result: string;
-}
+import { roundMoves } from "../types";
 
 interface RecentMovesProps {
   updatedLast10moves: roundMoves[];

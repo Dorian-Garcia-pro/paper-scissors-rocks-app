@@ -7,7 +7,8 @@
 .titleWrapper {
   display: flex;
   gap: 1rem;
-  & > button {
+
+  &>button {
     background-color: rgb(18, 18, 18);
     border: none;
     cursor: pointer;
@@ -19,11 +20,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    & > img {
+
+    &>img {
       aspect-ratio: 1;
       filter: invert(1);
       user-select: none;
     }
+
     &:hover {
       outline: 2px solid white;
     }
@@ -32,57 +35,65 @@
 
 .leaderboardTable {
   &.recentMovesTable {
-    & > thead {
-      & > tr {   
-        & > th {
+    &>thead {
+      &>tr {
+        &>th {
           padding: 1rem;
           text-align: center;
-          @media screen and (max-width: 570px){
-            padding:1rem;
-          }          
+
+          @media screen and (max-width: 570px) {
+            padding: 1rem;
+          }
         }
       }
     }
   }
-  
-  & > thead {
-    & > tr {
-        background-color: rgb(18, 18, 18);
-      & > th {
+
+  &>thead {
+    &>tr {
+      background-color: rgb(18, 18, 18);
+
+      &>th {
         padding: 1rem;
         text-align: center;
-        @media screen and (max-width: 570px){
+
+        @media screen and (max-width: 570px) {
           padding: 4px;
         }
 
-        
+
       }
     }
   }
 
-  & > tbody {
-    & > tr:nth-child(even) {
+  &>tbody {
+    &>tr:nth-child(even) {
       background-color: rgb(18, 18, 18);
-      & > td {
+
+      &>td {
         padding: 0.5rem;
         text-align: center;
       }
     }
 
-    & > tr:nth-child(odd) {
-      background-color:none;
-      & > td {
+    &>tr:nth-child(odd) {
+      background-color: none;
+
+      &>td {
         padding: 0.5rem;
         text-align: center;
       }
     }
-    & tr > td {
+
+    & tr>td {
       &[data-result="lose"] {
-       color: red;
+        color: red;
       }
+
       &[data-result="win"] {
         color: green;
-       }
+      }
+
       text-transform: capitalize;
     }
   }

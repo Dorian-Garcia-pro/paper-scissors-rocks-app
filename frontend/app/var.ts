@@ -1,0 +1,2 @@
+export const MAX_LEADERBOARD_ENTRIES = 10;
+export const MAX_RECENTMOVES_ENTRIES = 10;

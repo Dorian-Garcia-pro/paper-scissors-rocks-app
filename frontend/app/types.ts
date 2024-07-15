@@ -7,14 +7,13 @@ export interface roundMoves {
 export interface PlayerStats {
   username?: string;
   playerPosition?: number;
-  playerName: string;
-  gamesPlayed: number;
+  gamesPlayed?: number;
   wins: number;
-  losses: number;
+  losses?: number;
 }
 
 export interface LeaderboardEntry {
-  playerName: string;
+  username: string;
   wins: number;
 }
 
